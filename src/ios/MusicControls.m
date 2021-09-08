@@ -252,10 +252,22 @@ MusicControlsInfo * musicControlsSettings;
     
     //register required event handlers for standard controls
     MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
-    [commandCenter.playCommand setEnabled:true];
-    [commandCenter.playCommand addTarget:self action:@selector(playEvent:)];
-    [commandCenter.pauseCommand setEnabled:true];
-    [commandCenter.pauseCommand addTarget:self action:@selector(pauseEvent:)];
+    if( musicControlsSettings.hasPlay) {
+        [commandCenter.playCommand setEnabled:true];
+        [commandCenter.playCommand addTarget:self action:@selector(playEvent:)];
+    } else {
+        [commandCenter.playCommand setEnabled:false];
+        [commandCenter.playCommand addTarget:self action:@selector(playEvent:)];
+    }
+
+    if( musicControlsSettings.hasPause) {
+        [commandCenter.pauseCommand setEnabled:true];
+        [commandCenter.pauseCommand addTarget:self action:@selector(pauseEvent:)];
+    } else {
+        [commandCenter.pauseCommand setEnabled:false];
+        [commandCenter.pauseCommand addTarget:self action:@selector(pauseEvent:)];
+    }
+    
     if(musicControlsSettings.hasNext){
         [commandCenter.nextTrackCommand setEnabled:true];
         [commandCenter.nextTrackCommand addTarget:self action:@selector(nextTrackEvent:)];

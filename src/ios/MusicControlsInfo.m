@@ -23,6 +23,8 @@
         [self setIsPlaying: [[dictionary objectForKey:@"isPlaying"] boolValue]];
         [self setHasPrev: [[dictionary objectForKey:@"hasPrev"] boolValue]];
         [self setHasNext: [[dictionary objectForKey:@"hasNext"] boolValue]];
+        [self setHasPlay: [[dictionary objectForKey:@"hasPlay"] boolValue]];
+        [self setHasPause: [[dictionary objectForKey:@"hasPause"] boolValue]];
         [self setHasSkipForward: [[dictionary objectForKey:@"hasSkipForward"] boolValue]];
         [self setHasSkipBackward: [[dictionary objectForKey:@"hasSkipBackward"] boolValue]];
         [self setHasScrubbing: [[dictionary objectForKey:@"hasScrubbing"] boolValue]];

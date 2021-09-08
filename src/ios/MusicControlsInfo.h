@@ -23,6 +23,8 @@
 @property bool isPlaying;
 @property bool hasPrev;
 @property bool hasNext;
+@property bool hasPlay;
+@property bool hasPause;
 @property bool hasSkipForward;
 @property bool hasSkipBackward;
 @property bool hasScrubbing;
