@@ -195,15 +195,15 @@ public class MusicControlsNotification {
 			int resId = this.getResourceId(infos.notificationIcon, 0);
 			usePlayingIcon = resId == 0;
 			if(!usePlayingIcon) {
-				builder.setLargeIcon(resId);
+				builder.setSmallIcon(resId);
 			}
 		}
 
 		if(usePlayingIcon){
 			if (infos.isPlaying){
-				builder.setLargeIcon(this.getResourceId(infos.playIcon, android.R.drawable.ic_media_play));
+				builder.setSmallIcon(this.getResourceId(infos.playIcon, android.R.drawable.ic_media_play));
 			} else {
-				builder.setLargeIcon(this.getResourceId(infos.pauseIcon, android.R.drawable.ic_media_pause));
+				builder.setSmallIcon(this.getResourceId(infos.pauseIcon, android.R.drawable.ic_media_pause));
 			}
 		}
 
