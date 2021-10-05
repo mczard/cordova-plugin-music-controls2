@@ -80,9 +80,9 @@ public class MusicControlsNotification {
 	}
 
 	// Toggle the play/pause button
-	public void updateIsPlaying(boolean isPlaying) {
+	public boolean updateIsPlaying(boolean isPlaying) {
 		if (this.infos == null) {
-			return;
+			return false;
 		}
 
 		this.infos.isPlaying=isPlaying;
@@ -90,6 +90,7 @@ public class MusicControlsNotification {
 		Notification noti = this.notificationBuilder.build();
 		this.notificationManager.notify(this.notificationID, noti);
 		this.onNotificationUpdated(noti);
+		return true;
 	}
 
 	// Toggle the dismissable status
