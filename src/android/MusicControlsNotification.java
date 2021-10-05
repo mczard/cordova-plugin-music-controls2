@@ -81,7 +81,7 @@ public class MusicControlsNotification {
 
 	// Toggle the play/pause button
 	public void updateIsPlaying(boolean isPlaying) {
-		if (this.infos === null) {
+		if (this.infos == null) {
 			return;
 		}
 
@@ -94,7 +94,7 @@ public class MusicControlsNotification {
 
 	// Toggle the dismissable status
 	public void updateDismissable(boolean dismissable){
-		if (this.infos === null) {
+		if (this.infos == null) {
 			return;
 		}
 		
