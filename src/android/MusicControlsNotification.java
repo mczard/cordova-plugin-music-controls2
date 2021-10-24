@@ -36,6 +36,10 @@ public class MusicControlsNotification {
 	protected MusicControlsInfos infos;
 	private Bitmap bitmapCover;
 	private String CHANNEL_ID;
+	public boolean pause_down = false;
+	public boolean next_down = false;
+	public boolean prev_down = false;
+	public boolean play_down = false;
 
 	// Public Constructor
 	public MusicControlsNotification(Activity cordovaActivity, int id){
@@ -90,6 +94,23 @@ public class MusicControlsNotification {
 		Notification noti = this.notificationBuilder.build();
 		this.notificationManager.notify(this.notificationID, noti);
 		this.onNotificationUpdated(noti);
+		return true;
+	}
+
+	// Refresh
+	public boolean refresh() {
+		if (this.infos == null) {
+			return false;
+		}
+
+		try {
+			this.createBuilder();
+			Notification noti = this.notificationBuilder.build();
+			this.notificationManager.notify(this.notificationID, noti);
+			this.onNotificationUpdated(noti);
+		} catch (Exception e) {
+        }
+
 		return true;
 	}
 
@@ -234,30 +255,38 @@ public class MusicControlsNotification {
 		if (infos.hasPrev){
 			/* Previous  */
 			nbControls++;
+			String prevIcon = this.prev_down ? "prev_down" : "prev";
+
 			Intent previousIntent = new Intent("music-controls-previous");
 			PendingIntent previousPendingIntent = PendingIntent.getBroadcast(context, 1, previousIntent, 0);
-			builder.addAction(this.getResourceId(infos.prevIcon, android.R.drawable.ic_media_previous), "", previousPendingIntent);
+			builder.addAction(this.getResourceId(prevIcon, android.R.drawable.ic_media_previous), "", previousPendingIntent);
 		}
 		if (infos.isPlaying){
 			/* Pause  */
 			nbControls++;
+			String pauseIcon = this.pause_down ? "pause_down" : "pause";
+
 			Intent pauseIntent = new Intent("music-controls-pause");
 			PendingIntent pausePendingIntent = PendingIntent.getBroadcast(context, 1, pauseIntent, 0);
-			builder.addAction(this.getResourceId(infos.pauseIcon, android.R.drawable.ic_media_pause), "", pausePendingIntent);
+			builder.addAction(this.getResourceId(pauseIcon, android.R.drawable.ic_media_pause), "", pausePendingIntent);
 		} else {
 			/* Play  */
 			nbControls++;
+			String playIcon = this.play_down ? "play_down" : "play";
+
 			Intent playIntent = new Intent("music-controls-play");
 			PendingIntent playPendingIntent = PendingIntent.getBroadcast(context, 1, playIntent, 0);
-			builder.addAction(this.getResourceId(infos.playIcon, android.R.drawable.ic_media_play), "", playPendingIntent);
+			builder.addAction(this.getResourceId(playIcon, android.R.drawable.ic_media_play), "", playPendingIntent);
 		}
 
 		if (infos.hasNext){
 			/* Next */
 			nbControls++;
+			String nextIcon = this.next_down ? "next_down" : "next";
+
 			Intent nextIntent = new Intent("music-controls-next");
 			PendingIntent nextPendingIntent = PendingIntent.getBroadcast(context, 1, nextIntent, 0);
-			builder.addAction(this.getResourceId(infos.nextIcon, android.R.drawable.ic_media_next), "", nextPendingIntent);
+			builder.addAction(this.getResourceId(nextIcon, android.R.drawable.ic_media_next), "", nextPendingIntent);
 		}
 		if (infos.hasClose){
 			/* Close */

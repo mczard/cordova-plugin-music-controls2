@@ -42,7 +42,7 @@ import java.net.URL;
 
 public class MusicControls extends CordovaPlugin {
 	private MusicControlsBroadcastReceiver mMessageReceiver;
-	private MusicControlsNotification notification;
+	public MusicControlsNotification notification;
 	private MediaSessionCompat mediaSessionCompat;
 	private final int notificationID=7824;
 	private AudioManager mAudioManager;

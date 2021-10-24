@@ -11,9 +11,13 @@ import android.os.Bundle;
 import android.content.BroadcastReceiver;
 import android.view.KeyEvent;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class MusicControlsBroadcastReceiver extends BroadcastReceiver {
 	private CallbackContext cb;
 	private MusicControls musicControls;
+	private Timer timer;
 
 
 	public MusicControlsBroadcastReceiver(MusicControls musicControls){
@@ -130,11 +134,61 @@ public class MusicControlsBroadcastReceiver extends BroadcastReceiver {
 				this.cb = null;
 				this.musicControls.destroyPlayerNotification();
 			} else {
+
+				MusicControlsNotification notification = this.musicControls.notification;
+
+				switch (message) {
+					case "music-controls-pause":
+						notification.pause_down = true;
+						notification.next_down = false;
+						notification.prev_down = false;
+						notification.play_down = true;
+						notification.refresh();
+
+						if (this.timer != null) {
+							this.timer.cancel();
+						}
+
+						this.timer = new Timer();
+						this.timer.schedule(new TimerTask() {
+							@Override
+							public void run() {
+								notification.next_down = false;
+								notification.pause_down = false;
+								notification.prev_down = false;
+								notification.play_down = false;
+								notification.refresh();
+							}
+						}, 200L); // 300 is the delay in millis
+						break;
+					case "music-controls-play":
+						notification.play_down = true;
+						notification.next_down = false;
+						notification.pause_down = true;
+						notification.prev_down = false;
+						notification.refresh();
+
+						if (this.timer != null) {
+							this.timer.cancel();
+						}
+
+						this.timer = new Timer();
+						this.timer.schedule(new TimerTask() {
+							@Override
+							public void run() {
+								notification.next_down = false;
+								notification.pause_down = false;
+								notification.prev_down = false;
+								notification.play_down = false;
+								notification.refresh();
+							}
+						}, 200L); // 300 is the delay in millis
+						break;
+				}
+				
 				this.cb.success("{\"message\": \"" + message + "\"}");
 				this.cb = null;
 			}
-
-
 		}
 
 	}
