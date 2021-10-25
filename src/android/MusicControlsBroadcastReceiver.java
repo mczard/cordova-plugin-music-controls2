@@ -159,7 +159,7 @@ public class MusicControlsBroadcastReceiver extends BroadcastReceiver {
 								notification.play_down = false;
 								notification.refresh();
 							}
-						}, 200L); // 300 is the delay in millis
+						}, 100L); // 300 is the delay in millis
 						break;
 					case "music-controls-play":
 						notification.play_down = true;
@@ -182,7 +182,7 @@ public class MusicControlsBroadcastReceiver extends BroadcastReceiver {
 								notification.play_down = false;
 								notification.refresh();
 							}
-						}, 200L); // 300 is the delay in millis
+						}, 100L); // 300 is the delay in millis
 						break;
 				}
 				
