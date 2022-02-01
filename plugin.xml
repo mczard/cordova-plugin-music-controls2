@@ -36,8 +36,8 @@
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
 			<service 
-				 android:name="com.homerours.musiccontrols.MusicControlsNotificationKiller">
-				 android:exported="false"
+				 android:name="com.homerours.musiccontrols.MusicControlsNotificationKiller"
+				 android:exported="false">
 			</service>
 		</config-file>
 
