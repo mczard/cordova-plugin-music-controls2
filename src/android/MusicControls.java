@@ -132,7 +132,10 @@ public class MusicControls extends CordovaPlugin {
 		try {
 			this.mAudioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 			Intent headsetIntent = new Intent("music-controls-media-button");
-			this.mediaButtonPendingIntent = PendingIntent.getBroadcast(context, 0, headsetIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+			this.mediaButtonPendingIntent = PendingIntent.getBroadcast(
+				context, 0, headsetIntent,
+				Build.VERSION.SDK_INT >= 31 ? PendingIntent.FLAG_UPDATE_CURRENT | 33554432 : PendingIntent.FLAG_UPDATE_CURRENT
+			);
 			this.registerMediaButtonEvent();
 		} catch (Exception e) {
 			this.mediaButtonAccess=false;
@@ -151,53 +154,53 @@ public class MusicControls extends CordovaPlugin {
 
 		
 		if (action.equals("create")) {
-			final MusicControlsInfos infos = new MusicControlsInfos(args);
-			 final MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder();
+		final MusicControlsInfos infos = new MusicControlsInfos(args);
+		final MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder();
 
 
-			this.cordova.getThreadPool().execute(new Runnable() {
-				public void run() {
-					notification.updateNotification(infos);
-					
-					// track title
-					metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, infos.track);
-					// artists
-					metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, infos.artist);
-					//album
-					metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, infos.album);
+		this.cordova.getThreadPool().execute(new Runnable() {
+			public void run() {
+				notification.updateNotification(infos);
+				
+				// track title
+				metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, infos.track);
+				// artists
+				metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, infos.artist);
+				//album
+				metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, infos.album);
 
-					Bitmap art = getBitmapCover(infos.cover);
+				Bitmap art = getBitmapCover(infos.cover);
 					if(art != null){
-						metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, art);
-						metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, art);
+					metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, art);
+					metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, art);
 
-					}
+				}
 
-					mediaSessionCompat.setMetadata(metadataBuilder.build());
+				mediaSessionCompat.setMetadata(metadataBuilder.build());
 
 					if(infos.isPlaying)
-						setMediaPlaybackState(PlaybackStateCompat.STATE_PLAYING);
-					else
-						setMediaPlaybackState(PlaybackStateCompat.STATE_PAUSED);
-
-					callbackContext.success("success");
-				}
-			});
-		}
-		else if (action.equals("updateIsPlaying")){
-			final JSONObject params = args.getJSONObject(0);
-			final boolean isPlaying = params.getBoolean("isPlaying");
-			boolean result = this.notification.updateIsPlaying(isPlaying);
-			
-			if (result) {
-				if (isPlaying)
 					setMediaPlaybackState(PlaybackStateCompat.STATE_PLAYING);
 				else
 					setMediaPlaybackState(PlaybackStateCompat.STATE_PAUSED);
+
+					callbackContext.success("success");
 			}
+		});
+	}
+		else if (action.equals("updateIsPlaying")){
+			final JSONObject params = args.getJSONObject(0);
+			final boolean isPlaying = params.getBoolean("isPlaying");
+		boolean result = this.notification.updateIsPlaying(isPlaying);
 			
-			callbackContext.success("success");
+		if (result) {
+			if (isPlaying)
+				setMediaPlaybackState(PlaybackStateCompat.STATE_PLAYING);
+			else
+				setMediaPlaybackState(PlaybackStateCompat.STATE_PAUSED);
 		}
+
+			callbackContext.success("success");
+	}
 		else if (action.equals("updateDismissable")){
 			final JSONObject params = args.getJSONObject(0);
 			final boolean dismissable = params.getBoolean("dismissable");
@@ -235,19 +238,19 @@ public class MusicControls extends CordovaPlugin {
 		super.onReset();
 	}
 	private void setMediaPlaybackState(int state) {
-		PlaybackStateCompat.Builder playbackstateBuilder = new PlaybackStateCompat.Builder();
-		if( state == PlaybackStateCompat.STATE_PLAYING ) {
-			playbackstateBuilder.setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE | PlaybackStateCompat.ACTION_PAUSE | PlaybackStateCompat.ACTION_SKIP_TO_NEXT | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
-				PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID |
-				PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH);
-			playbackstateBuilder.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 1.0f);
-		} else {
-			playbackstateBuilder.setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE | PlaybackStateCompat.ACTION_PLAY | PlaybackStateCompat.ACTION_SKIP_TO_NEXT | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
-				PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID |
-				PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH);
-			playbackstateBuilder.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0);
-		}
-		this.mediaSessionCompat.setPlaybackState(playbackstateBuilder.build());
+			PlaybackStateCompat.Builder playbackstateBuilder = new PlaybackStateCompat.Builder();
+			if( state == PlaybackStateCompat.STATE_PLAYING ) {
+				playbackstateBuilder.setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE | PlaybackStateCompat.ACTION_PAUSE | PlaybackStateCompat.ACTION_SKIP_TO_NEXT | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
+					PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID |
+					PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH);
+				playbackstateBuilder.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 1.0f);
+			} else {
+				playbackstateBuilder.setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE | PlaybackStateCompat.ACTION_PLAY | PlaybackStateCompat.ACTION_SKIP_TO_NEXT | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
+					PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID |
+					PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH);
+				playbackstateBuilder.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0);
+			}
+			this.mediaSessionCompat.setPlaybackState(playbackstateBuilder.build());
 	}
 	
 	// Get image from url
